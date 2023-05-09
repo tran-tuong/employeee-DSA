@@ -4,18 +4,37 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+#include <stack>
 
 using namespace std;
 
-struct employee
+struct Employee
 {
     string gender;
     string email;
     string name;
-    int ID;
-    int phoneNo;
-    int salary;
+    string ID;
+    string phoneNo;
+    string salary;
 }info ;
+stack<Employee> employees;
+string deleteTemp, zero = "0";
+
+void predisplay();
+void readCSVFile();
+bool check_email();
+int validEmailCheck();
+bool caseCheck(int n);
+void addPhoneNo();
+bool checkValidIntergerArray(string n);
+bool checkIDDuplicate(int ID);
+bool checkPNDuplicate(int pn);
+void add();
+void displayEmployees();
+void deleteEmployee(int id);
+void addID();
+void addSalary();
+
 
 void predisplay(){
     cout << " ______ __  __ _____  _      ______     ________ ______   __  __          _   _          _____ ______ __  __ ______ _   _ _______    _______     _______ _______ ______ __  __ " << endl;
@@ -25,6 +44,52 @@ void predisplay(){
     cout << "| |____| |  | | |    | |___| |__| | | |  | |____| |____  | |  | |/ ____ \\| |\\  |/ ____ \\ |__| | |____| |  | | |____| |\\  |  | |     ____) |  | |  ____) |  | |  | |____| |  | |" << endl;
     cout << "|______|_|  |_|_|    |______\\____/  |_|  |______|______| |_|  |_/_/    \\_\\_| \\_/_/    \\_\\_____|______|_|  |_|______|_| \\_|  |_|    |_____/   |_| |_____/   |_|  |______|_|  |_|" << endl;
 
+}
+
+void readCSVFile() {
+    ifstream file;
+    file.open("Book1.csv", ios::in);
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        Employee e;
+        getline(ss, e.name, ',');
+        getline(ss, e.gender, ',');
+        getline(ss, e.email, ',');
+        getline(ss, e.ID, ',');
+        getline(ss, e.phoneNo, ',');
+        getline(ss, e.salary, ',');
+        employees.push(e);
+    }
+    file.close();
+}
+
+void addGender(){
+    bool parse_correct;
+    do{
+        parse_correct = true;
+        cout << "Gender: \nMale(1)\t\tFemale(2)\t\tHomo(3)" << endl;
+        int gender;
+        cin >> gender;
+        switch (gender)
+        {
+        case 1:
+            info.gender = "Male";
+            break;
+        case 2:
+            info.gender = "Female";
+            break;
+        case 3:
+            info.gender = "Homo";
+            
+            break;
+        
+        default:
+            cout << "Invalid input!";
+            parse_correct = false;
+            break;
+        }
+    } while(!parse_correct);
 }
 
 bool check_email(){
@@ -60,11 +125,11 @@ bool check_email(){
     if (atFlag == true && dotFlag == true) return false;
 }
 
-int valid_email_check() {
+int validEmailCheck() {
     bool x = true;
     do
     {
-//        printf("Email: ");
+        printf("Email: ");
         x = check_email();
         if (x == false) printf("Invalid email!\n");
     } while (x == false); 
@@ -78,6 +143,97 @@ bool caseCheck(int n){
     }
     return true;
 }
+
+void addPhoneNo(){
+    bool parse_correct = true;
+    int addPhoneNoTemp;
+    do{
+        cout << "Phone number: ";
+        getline(cin, info.phoneNo);
+        addPhoneNoTemp = stoi(info.phoneNo);
+        if(info.phoneNo.length() != 10){
+            parse_correct = false;
+            cout << "Phone number must have 10 digits!\n";
+            continue;
+        } else if(!checkValidIntergerArray(info.phoneNo) || !checkPNDuplicate(addPhoneNoTemp)){
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+
+    } while(!parse_correct);
+}
+
+void addID(){
+    bool parse_correct = true;
+    int addIDTemp;
+    do{
+        cout << "ID: ";
+        getline(cin, info.ID);
+        addIDTemp = stoi(info.ID);
+        if(!checkIDDuplicate(addIDTemp)){
+            parse_correct = false;
+        } else{
+            parse_correct = true;
+        }
+    }while(!parse_correct);
+}
+
+void addSalary(){
+    bool parse_correct = true;
+    int addSalaryTemp;
+    do{
+        cout << "Salary: ";
+        getline(cin, info.salary);
+        if(!checkValidIntergerArray(info.salary)){
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+
+    } while(!parse_correct);
+}
+
+bool checkValidIntergerArray(string n){
+    for(auto i : n){
+        if(!isdigit(i)){
+            cout << "Invalid Input!";
+            return false;
+        }
+    }
+    return true;
+}
+
+bool checkIDDuplicate(int ID){
+    stack<Employee> tempStack = employees;
+    bool found = false;
+    while (!tempStack.empty()) {
+        Employee temp = tempStack.top();
+        tempStack.pop();
+        if (stoi(temp.ID) == ID) {
+            cout << "ID already appeared in the database! Please check again\n";
+            return false;
+        }
+    }
+    return true;
+}
+
+bool checkPNDuplicate(int pn){
+    stack<Employee> tempStack = employees;
+    bool found = false;
+    while (!tempStack.empty()) {
+        Employee temp = tempStack.top();
+        tempStack.pop();
+        temp.phoneNo.insert(0, zero);
+        if (stoi(temp.phoneNo) == pn) {
+            cout << "Phone number already appeared in the database! Please check again\n";
+            temp.phoneNo.erase(0,1);
+            return false;
+        }
+    }
+    return true;
+}
+
 
 void add(){
     fstream fout;
@@ -96,78 +252,77 @@ void add(){
     }
     fflush(stdin);
 
-    cout << "Gender: ";
-    getline(cin, info.gender);
+    addGender();
     fflush(stdin);
 
-    cout << "Email: ";
-    valid_email_check();
+    //cout << "Email: ";
+    validEmailCheck();
     fflush(stdin);
 
-    cout << "ID: ";
-    cin >> info.ID;
+    addID();
     fflush(stdin);
 
-    cout << "Phone number: ";
-    cin >> info.phoneNo;
+    addPhoneNo();
     fflush(stdin);
 
-    cout << "Salary: ";
-    cin >> info.salary;
+    addSalary();
     fflush(stdin);
 
     fout << info.name << ", " << info.gender << ", " << info.email << ", " << info.ID << ", " << info.phoneNo << ", " << info.salary << endl;
 
 }
 
-void show(){
-    fstream fin;
-    
-    fin.open("Book1.csv", ios::in);
+void displayEmployees() {
+    system("cls");
+    stack<Employee> tempStack = employees;
+    if (tempStack.empty()) {
+        cout << "No employees in the system!\n";
+    }
+    while (!tempStack.empty()) {
+        Employee temp = tempStack.top();
+        temp.phoneNo.insert(0, zero);       //do trong file csv mat so 0 nen add them vao de display
+        tempStack.pop();
+        cout << "Name: " << temp.name << endl;
+        cout << "Gender: " << temp.gender << endl;
+        cout << "Email: " << temp.email << endl;
+        cout << "ID: " << temp.ID << endl;
+        cout << "Phone num: " << temp.phoneNo << endl;
+        cout << "Salary: " << temp.salary << endl;
+        cout << "----------------------\n";
+    }
+}
 
-    int rollnum, roll2, count;
-    cout << "Enter the ID: ";
-    cin >> rollnum;
+void deleteEmployee(int id) {
+    stack<Employee> tempStack;
+    bool found = false;
+    while (!employees.empty()) {
+        Employee temp = employees.top();
+        employees.pop();
 
-    vector<string> row;
-    string line, word, temp;
-
-    while (fin << temp){
-        row.clear();
-
-        getline(fin, line);
-
-        stringstream str(line);
-
-        while(getline(str, word)){
-            row.push_back(word);
-        }
-
-        roll2 = stoi(row[3]);
-
-        if(roll2 == rollnum){
-            count = 1;
-            cout << "Name" << row[0] << endl;
-            cout << "Gender" << row[1] << endl;
-            cout << "Email" << row[2] << endl;
-            cout << "ID" << row[3] << endl;
-            cout << "Phone num" << row[4] << endl;
-            cout << "Salary" << row[5] << endl;
+        if (stoi(temp.ID) == id) {
+            found = true;
             break;
         }
-
-
+        tempStack.push(temp);
     }
-
-    if (count == 0){
-        cout << "Record not found";
+    while (!tempStack.empty()) {
+        employees.push(tempStack.top());
+        tempStack.pop();
+    }
+    if (found) {
+        cout << "Employee with ID " << id << " has been deleted!\n";
+    } else {
+        cout << "Employee not found!\n";
     }
 }
 
 
+
+
 int main(){
+    readCSVFile();
     main:
-    //system("cls");
+    system("cls");
     predisplay();
     int choice, yn;
     string name, email;
@@ -197,7 +352,6 @@ int main(){
             break;
         
         case 2:
-            
             break;
         
         case 3:
@@ -205,11 +359,17 @@ int main(){
             break;
         
         case 4:
+            int temp;
             
+            cout << "Enter the ID of the employee you want to delete: ";
+            cin >> temp;
+            fflush(stdin);
+
+            deleteEmployee(temp);
             break;
         
         case 5:
-            show();
+            displayEmployees();
             break;
         
         case 6:
@@ -220,7 +380,7 @@ int main(){
             cout << "Invalid option. Try again.\n";
             break;
     }    
-    cout << "Press (1) to return to the main menu!\n";
+    cout << "Press (1) to return to the main menu!\nPress any other key to exit the program!\n";
     cin >> yn;
     switch (yn)
     {
