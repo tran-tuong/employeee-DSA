@@ -47,24 +47,6 @@ void predisplay(){
 }
 
 void readCSVFile() {
-    ifstream file; //ifstream Đại diện cho stream đầu vào, được dùng để đọc thông tin từ file dữ liệu
-    file.open("Book1.csv", ios::in); //iso::in mở file
-    string line;
-    while (getline(file, line)) {
-        stringstream ss(line);
-        Employee e;
-        getline(ss, e.name, ',');
-        getline(ss, e.gender, ',');
-        getline(ss, e.email, ',');
-        getline(ss, e.ID, ',');
-        getline(ss, e.phoneNo, ',');
-        getline(ss, e.salary, ',');
-        employees.push(e);
-    }
-    file.close();
-}
-
-void readCSVFile() {
     ifstream file;
     file.open("Book1.csv", ios::in);
     string line;
