@@ -6,7 +6,7 @@
 #include <stack>
 
 using namespace std;
-
+//spinach
 struct Employee
 {
     string gender;
