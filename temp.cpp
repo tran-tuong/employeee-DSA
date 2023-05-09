@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <sstream>
 #include <string>
 #include <cstring>
@@ -59,6 +58,7 @@ void readCSVFile() {
         getline(ss, e.ID, ',');
         getline(ss, e.phoneNo, ',');
         getline(ss, e.salary, ',');
+        e.phoneNo.insert(0, zero);
         employees.push(e);
     }
     file.close();
@@ -68,7 +68,7 @@ void addGender(){
     bool parse_correct;
     do{
         parse_correct = true;
-        cout << "Gender: \nMale(1)\t\tFemale(2)\t\tHomo(3)" << endl;
+        cout << "Gender: \nMale(1)\t\tFemale(2)\t\tHomo(3)\nYour choice: " ;
         int gender;
         cin >> gender;
         switch (gender)
@@ -204,17 +204,18 @@ bool checkValidIntergerArray(string n){
     return true;
 }
 
-bool checkIDDuplicate(int ID){
+bool checkIDDuplicate(int id){
     stack<Employee> tempStack = employees;
     bool found = false;
     while (!tempStack.empty()) {
         Employee temp = tempStack.top();
         tempStack.pop();
-        if (stoi(temp.ID) == ID) {
+        if (stoi(temp.ID) == id) {
             cout << "ID already appeared in the database! Please check again\n";
             return false;
         }
     }
+    fflush(stdin);
     return true;
 }
 
@@ -230,7 +231,9 @@ bool checkPNDuplicate(int pn){
             temp.phoneNo.erase(0,1);
             return false;
         }
+        temp.phoneNo.erase(0,1);
     }
+    fflush(stdin);
     return true;
 }
 
@@ -267,9 +270,9 @@ void add(){
 
     addSalary();
     fflush(stdin);
+    employees.push(info);
 
     fout << info.name << ", " << info.gender << ", " << info.email << ", " << info.ID << ", " << info.phoneNo << ", " << info.salary << endl;
-
 }
 
 void displayEmployees() {
@@ -280,7 +283,7 @@ void displayEmployees() {
     }
     while (!tempStack.empty()) {
         Employee temp = tempStack.top();
-        temp.phoneNo.insert(0, zero);       //do trong file csv mat so 0 nen add them vao de display
+        //temp.phoneNo.insert(0, zero);       //do trong file csv mat so 0 nen add them vao de display
         tempStack.pop();
         cout << "Name: " << temp.name << endl;
         cout << "Gender: " << temp.gender << endl;
