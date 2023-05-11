@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <stack>
+#include <vector>
 
 using namespace std;
 
@@ -33,6 +34,9 @@ void displayEmployees();
 void deleteEmployee(int id);
 void addID();
 void addSalary();
+int partition(vector<int>& arr1, vector<int>& arr2, int low, int high);
+void quicksort(vector<int>& arr1, vector<int>& arr2, int low, int high);
+void sortData();
 
 
 void predisplay(){
@@ -52,13 +56,15 @@ void readCSVFile() {
     while (getline(file, line)) {
         stringstream ss(line);
         Employee e;
+        if(!ss){
+            continue;
+        }
         getline(ss, e.name, ',');
         getline(ss, e.gender, ',');
         getline(ss, e.email, ',');
         getline(ss, e.ID, ',');
         getline(ss, e.phoneNo, ',');
         getline(ss, e.salary, ',');
-        //e.phoneNo.insert(0, zero);
         employees.push(e);
     }
     file.close();
@@ -137,7 +143,7 @@ int validEmailCheck() {
 }
 
 bool caseCheck(int n){
-    if(n < 1 || n > 6){
+    if(n < 1 || n > 7){
         return false;
     }
     return true;
@@ -243,7 +249,7 @@ void add(){
     string exit = " ";
 
     cout << "Adding element: \n(Enter *Blankspace* to exit)" << endl;
-    //getline(cin, info.name);            //dunno why but it works ?!
+    getline(cin, info.name);            //dunno why but it works ?!
     cout << "Name: ";
     getline(cin, info.name);
     int checkIfExit = info.name.compare(exit);
@@ -288,7 +294,7 @@ void displayEmployees() {
         cout << "Gender: " << temp.gender << endl;
         cout << "Email: " << temp.email << endl;
         cout << "ID: " << temp.ID << endl;
-        cout << "Phone num: " << temp.phoneNo << endl;
+        cout << "Phone num: 0" << temp.phoneNo << endl;
         cout << "Salary: " << temp.salary << endl;
         cout << "----------------------\n";
     }
@@ -318,10 +324,10 @@ void searchEmployee(int id) {
 }
 
 void deleteEmployee(int id) {
-    stack<Employee> tempStack;
+    stack<Employee> tempStack, tempStack2;
+    Employee temp;
     bool found = false;
-    fstream fin, fout;
-    fout.open("Book1New.csv", ios::out);
+    fstream fin("Book1.csv", ios::in | ios::out);
     while (!employees.empty()) {
         Employee temp = employees.top();
         employees.pop();
@@ -336,20 +342,82 @@ void deleteEmployee(int id) {
         employees.push(tempStack.top());
         tempStack.pop();
     }
-    while (!employees.empty()){
-        Employee temp = employees.top();
-        fout << temp.name << ", " << temp.gender << ", " << temp.email << ", " << temp.ID << ", " << temp.phoneNo << ", " << temp.salary << endl;
-    }
+    tempStack2 = employees;
+
+
+
     if (found) {
         cout << "Employee with ID " << id << " has been deleted!\n";
+        fin.seekg(0, ios::beg);
+        while(!tempStack2.empty()){
+            fin << tempStack2.top().name << ","<< tempStack2.top().gender << ","<< tempStack2.top().email << ","<< tempStack2.top().ID << ","<< tempStack2.top().phoneNo << ","<< tempStack2.top().salary << endl; 
+            tempStack2.pop();
+        }
+
     } else {
         cout << "Employee not found!\n";
     }
-    remove("Book1.csv");
-    rename("Book1New.csv", "Book1.csv");
+    fin.close();
 }
 
 
+
+//--------------------------------sort test----------------------------
+
+
+int partition(vector<int>& arr, vector<int>& arr1, int low, int high) {
+    int pivot = arr[high];  // Choosing the last element as the pivot
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+            swap(arr1[i], arr1[j]);
+        }
+    }
+
+    swap(arr[i + 1], arr[high]);
+    swap(arr1[i + 1], arr1[high]);
+
+    return i + 1;
+}
+
+// Function to perform quicksort on the vector
+void quicksort(vector<int>& arr, vector<int>& arr1, int low, int high) {
+    if (low < high) {
+        int pivot_index = partition(arr, arr1, low, high);
+
+        quicksort(arr, arr1, low, pivot_index - 1);
+        quicksort(arr, arr1, pivot_index + 1, high);
+    }
+}
+
+void sortData(){
+    //stack<Employee> tempStack = employees, sortedData;
+    Employee temp;
+    int i, j, l, a = 0, stemp;
+    vector<Employee> tempVector;
+    vector<int> salary, index;
+    while(!employees.empty()){
+        tempVector.push_back(employees.top());
+        stemp = stoi(employees.top().salary);
+        salary.push_back(stemp);
+        index.push_back(a);
+        a++;
+        employees.pop();
+    }
+    l = tempVector.size();
+    quicksort(salary, index, 0, l-1);
+
+    for(auto ele : index){
+        employees.push(tempVector[ele]);
+    }
+    cout << "Sort succeeded!!\nGo to function (5) in Menu to check!";
+
+}
+
+//--------------------------------test----------------------------
 
 
 int main(){
@@ -368,8 +436,9 @@ int main(){
         cout << "2. Update an existing info\n";
         cout << "3. Search for a info\n";   
         cout << "4. Remove a info\n";
-        cout << "5. List all contacts\n";
-        cout << "6. Exit\n\n";
+        cout << "5. List all datas\n";
+        cout << "6. Sort datas\n";
+        cout << "7. Exit\n\n";
         cout << "==========================\n\n";
         cout << "Your option: ";
 
@@ -397,6 +466,7 @@ int main(){
             break;
         
         case 2:
+
             break;
         
         case 3:
@@ -422,9 +492,15 @@ int main(){
             break;
         
         case 6:
+
+            sortData();
+            break;
+
+        case 7:
+        
             cout << "Are you sure you want to exit?\n";
             break;
-        
+
         default:
             cout << "Invalid option. Try again.\n";
             break;
