@@ -1,0 +1,86 @@
+void addID(Employee& emp) {
+    bool parse_correct = true;
+    int addIDTemp;
+    do {
+        cout << "ID: ";
+        cin >> emp.ID;
+        addIDTemp = stoi(emp.ID);
+        if (!checkIDDuplicate(addIDTemp)) {
+            parse_correct = false;
+            cout << "ID already exists. Please enter a different ID." << endl;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+void addGender(Employee& emp) {
+    bool parse_correct;
+    do {
+        parse_correct = true;
+        cout << "Gender:\n";
+        cout << "Male(1)\t\tFemale(2)\t\tHomo(3)\n";
+        cout << "Your choice: ";
+        int gender;
+        cin >> gender;
+        switch (gender) {
+            case 1:
+                emp.gender = "Male";
+                break;
+            case 2:
+                emp.gender = "Female";
+                break;
+            case 3:
+                emp.gender = "Homo";
+                break;
+            default:
+                cout << "Invalid input!" << endl;
+                parse_correct = false;
+                break;
+        }
+    } while (!parse_correct);
+}
+
+void addPhoneNo(Employee& emp) {
+    bool parse_correct = true;
+    int addPhoneNoTemp;
+    do {
+        cout << "Phone number: ";
+        cin >> emp.phoneNo;
+        addPhoneNoTemp = stoi(emp.phoneNo);
+        if (emp.phoneNo.length() != 10) {
+            parse_correct = false;
+            cout << "Phone number must have 10 digits!" << endl;
+        } else if (!checkValidIntegerArray(emp.phoneNo) || !checkPNDuplicate(addPhoneNoTemp)) {
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+void addSalary(Employee& emp) {
+    bool parse_correct = true;
+    do {
+        cout << "Salary: ";
+        cin >> emp.salary;
+        if (!checkValidIntegerArray(emp.salary)) {
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+void addEmail(Employee& emp) {
+    bool valid = true;
+    do {
+        cout << "Email: ";
+        cin >> emp.email;
+        valid = checkEmail(emp.email);
+        if (!valid) {
+            cout << "Invalid email!" << endl;
+        }
+    } while (!valid);
+}
+

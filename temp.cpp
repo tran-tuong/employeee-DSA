@@ -25,7 +25,7 @@ bool check_email();
 int validEmailCheck();
 bool caseCheck(int n);
 void addPhoneNo();
-bool checkValidIntergerArray(string n);
+bool checkValidIntegerArray(string n);
 bool checkIDDuplicate(int ID);
 bool checkPNDuplicate(int pn);
 void add();
@@ -33,7 +33,7 @@ void displayEmployees();
 void deleteEmployee(int id);
 void addID();
 void addSalary();
-
+void update_input();
 
 void predisplay(){
     cout << " ______ __  __ _____  _      ______     ________ ______   __  __          _   _          _____ ______ __  __ ______ _   _ _______    _______     _______ _______ ______ __  __ " << endl;
@@ -92,28 +92,28 @@ void addGender(){
     } while(!parse_correct);
 }
 
-bool check_email(){
+bool check_email(string email){
     int i, j, k = 0, count = 0;
     bool atFlag = true;
     bool dotFlag = true;
     char two_words[3] = "@.";
-    getline(cin, info.email);
-    while (info.email[k] != '\0')
+    
+    while (email[k] != '\0')
     {
-        if(info.email[k] == ' '){
+        if(email[k] == ' '){
             count++;
         }
         k++;
     }
     
     if (count > 0) return false;
-    for(i = 0; i < info.email.length(); i++){
-        if(info.email[i] == '@'){
+    for(i = 0; i < email.length(); i++){
+        if(email[i] == '@'){
             atFlag = false;
         }
-        for (j = 0; j < info.email.length(); j++)
+        for (j = 0; j < email.length(); j++)
         {
-            if(info.email[j] == '.'){
+            if(email[j] == '.'){
                 dotFlag = false;
             }
         }
@@ -126,11 +126,12 @@ bool check_email(){
 }
 
 int validEmailCheck() {
+    getline(cin, info.email);
     bool x = true;
     do
     {
         printf("Email: ");
-        x = check_email();
+        x = check_email(info.email);
         if (x == false) printf("Invalid email!\n");
     } while (x == false); 
     return 0;
@@ -155,7 +156,7 @@ void addPhoneNo(){
             parse_correct = false;
             cout << "Phone number must have 10 digits!\n";
             continue;
-        } else if(!checkValidIntergerArray(info.phoneNo) || !checkPNDuplicate(addPhoneNoTemp)){
+        } else if(!checkValidIntegerArray(info.phoneNo) || !checkPNDuplicate(addPhoneNoTemp)){
             parse_correct = false;
         } else {
             parse_correct = true;
@@ -185,7 +186,7 @@ void addSalary(){
     do{
         cout << "Salary: ";
         getline(cin, info.salary);
-        if(!checkValidIntergerArray(info.salary)){
+        if(!checkValidIntegerArray(info.salary)){
             parse_correct = false;
         } else {
             parse_correct = true;
@@ -194,7 +195,7 @@ void addSalary(){
     } while(!parse_correct);
 }
 
-bool checkValidIntergerArray(string n){
+bool checkValidIntegerArray(string n){
     for(auto i : n){
         if(!isdigit(i)){
             cout << "Invalid Input!";
@@ -318,9 +319,165 @@ void deleteEmployee(int id) {
         cout << "Employee not found!\n";
     }
 }
+//---------------------------update-----------------------//
+
+void addID(Employee& emp) {
+    bool parse_correct = true;
+    int addIDTemp;
+    do {
+        cout << "ID: ";
+        cin >> emp.ID;
+        addIDTemp = stoi(emp.ID);
+        if (!checkIDDuplicate(addIDTemp)) {
+            parse_correct = false;
+            cout << "ID already exists. Please enter a different ID." << endl;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+void addGender(Employee& emp) {
+    bool parse_correct;
+    do {
+        parse_correct = true;
+        cout << "Gender:\n";
+        cout << "Male(1)\t\tFemale(2)\t\tHomo(3)\n";
+        cout << "Your choice: ";
+        int gender;
+        cin >> gender;
+        switch (gender) {
+            case 1:
+                emp.gender = "Male";
+                break;
+            case 2:
+                emp.gender = "Female";
+                break;
+            case 3:
+                emp.gender = "Homo";
+                break;
+            default:
+                cout << "Invalid input!" << endl;
+                parse_correct = false;
+                break;
+        }
+    } while (!parse_correct);
+}
+
+void addPhoneNo(Employee& emp) {
+    bool parse_correct = true;
+    int addPhoneNoTemp;
+    do {
+        cout << "Phone number: ";
+        cin >> emp.phoneNo;
+        addPhoneNoTemp = stoi(emp.phoneNo);
+        if (emp.phoneNo.length() != 10) {
+            parse_correct = false;
+            cout << "Phone number must have 10 digits!" << endl;
+        } else if (!checkValidIntegerArray(emp.phoneNo) || !checkPNDuplicate(addPhoneNoTemp)) {
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+void addSalary(Employee& emp) {
+    bool parse_correct = true;
+    do {
+        cout << "Salary: ";
+        cin >> emp.salary;
+        if (!checkValidIntegerArray(emp.salary)) {
+            parse_correct = false;
+        } else {
+            parse_correct = true;
+        }
+    } while (!parse_correct);
+}
+
+
+// int validEmailCheck() {
+//     bool x = true;
+//     do
+//     {
+//         printf("Email: ");
+//         x = check_email();
+//         if (x == false) printf("Invalid email!\n");
+//     } while (x == false); 
+//     return 0;
+// }
+
+void addEmail(Employee& emp) {
+    bool valid = true;
+    do {
+        cout << "Email: ";
+        cin >> emp.email;
+        valid = check_email(emp.email);
+        if (!valid) {
+            cout << "Invalid email!" << endl;
+        }
+    } while (!valid);
+}
 
 
 
+void updateEmployees() {
+    stack<Employee> tempStack;
+    int id;
+    bool found = false;
+
+    cout << "Enter employee's ID to update: ";
+    cin >> id;
+
+    while (!employees.empty()) {
+        Employee emp = employees.top();
+        employees.pop();
+
+        if (emp.ID == to_string(id)) {
+            found = true;
+            addGender(emp);
+            addEmail(emp);
+
+            cout << "Name: ";
+            cin.ignore();
+            getline(cin, emp.name);
+
+            addID(emp);
+            addPhoneNo(emp);
+            addSalary(emp);
+        }
+
+        tempStack.push(emp);
+    }
+
+    if (found) {
+        ofstream outputFile("employees.csv");
+        if (outputFile.is_open()) {
+            while (!tempStack.empty()) {
+                Employee emp = tempStack.top();
+                tempStack.pop();
+
+                stringstream ss;
+                ss << emp.gender << "," << emp.email << "," << emp.name << "," << emp.ID << ","
+                    << emp.phoneNo << "," << emp.salary << endl;
+
+                outputFile << ss.str();
+            }
+
+            outputFile.close();
+            cout << "Employee information updated and written to employees.csv." << endl;
+        } else {
+            cout << "Unable to open employees.csv for writing." << endl;
+        }
+    } else {
+        cout << "Employee with the specified ID not found." << endl;
+    }
+}
+
+
+
+
+//-------------------------------------------------------//
 
 int main(){
     readCSVFile();
@@ -355,6 +512,7 @@ int main(){
             break;
         
         case 2:
+            updateEmployees();
             break;
         
         case 3:
