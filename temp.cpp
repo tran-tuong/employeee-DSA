@@ -270,7 +270,6 @@ void add(){
     employees.push(info);
     info.phoneNo.insert(0, "'");
     fout << info.name << ", " << info.gender << ", " << info.email << ", " << info.ID << ", " << info.phoneNo << ", " << info.salary << endl;
-    cout << info.phoneNo;
     fout.close();
 }
 
