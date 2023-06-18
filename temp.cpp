@@ -420,7 +420,6 @@ void sortData(){
 
 //--------------------------------test----------------------------
 
-
 int main(){
     readCSVFile();
     main:
@@ -447,8 +446,9 @@ int main(){
 
         if(!caseCheck(choice) || choice == 0){
             parsed_correct = false;
-                        //choice = 7;
-            cout << "yes";
+            
+            //choice = 7;
+            //cout << "yes";
             break;
         }
 
@@ -456,7 +456,8 @@ int main(){
         /*if(!parsed_correct){
             cout << "Invalid option. Try again.\n";
         }*/
-        //    } while(!parsed_correct);
+        //
+    } while(!parsed_correct);
     switch (choice){
         case 1:
 
@@ -482,6 +483,7 @@ int main(){
             cout << "Enter the ID of the employee you want to delete: ";
             cin >> temp4;
             
+
             deleteEmployee(temp4);
             break;
         
