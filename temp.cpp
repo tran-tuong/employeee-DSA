@@ -292,7 +292,7 @@ void displayEmployees(){
             tempStack.pop();
             cout << "| " << setw(9) << temp.ID << " | " << setw(24) << temp.name << " | " << setw(7) 
                          << temp.gender << " | " << setw(24) << temp.email << " | " << setw(11) 
-                         << 0 << temp.phoneNo << " | " << setw(9) << temp.salary << " | " << endl; 
+                         << temp.phoneNo << " | " << setw(9) << temp.salary << " | " << endl; 
             }
             cout << "---------------------------------------------------------------------------------------------------------------" << endl;
     }
