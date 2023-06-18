@@ -76,7 +76,7 @@ void addGender(){
     bool parse_correct;
     do{
         parse_correct = true;
-        cout << "Gender: \nMale(1)\tFemale(2)\tHomo(3)\nYour choice: " ;
+        cout << "Gender: \nMale(1)\tFemale(2)\tOther(3)\nYour choice: " ;
         int gender;
         cin >> gender;
         switch (gender)
@@ -88,7 +88,7 @@ void addGender(){
             info.gender = "Female";
             break;
         case 3:
-            info.gender = "Homo";
+            info.gender = "Other";
             
             break;
         
@@ -221,8 +221,7 @@ bool checkIDDuplicate(int id){
             return false;
         }
     }
-    fflush(stdin);
-    return true;
+        return true;
 }
 
 bool checkPNDuplicate(int pn){
@@ -239,8 +238,7 @@ bool checkPNDuplicate(int pn){
         }
         temp.phoneNo.erase(0,1);
     }
-    fflush(stdin);
-    return true;
+        return true;
 }
 
 
@@ -259,24 +257,18 @@ void add(){
         return;
 
     }
-    fflush(stdin);
-
+    
     addGender();
-    fflush(stdin);
-
+    
     //cout << "Email: ";
     validEmailCheck();
-    fflush(stdin);
-
+    
     addID();
-    fflush(stdin);
-
+    
     addPhoneNo();
-    fflush(stdin);
-
+    
     addSalary();
-    fflush(stdin);
-    employees.push(info);
+        employees.push(info);
 
     fout << info.name << ", " << info.gender << ", " << info.email << ", " << info.ID << ", " << info.phoneNo << ", " << info.salary << endl;
     fout.close();
@@ -455,8 +447,7 @@ int main(){
 
         if(!caseCheck(choice) || choice == 0){
             parsed_correct = false;
-            fflush(stdin);
-            //choice = 7;
+                        //choice = 7;
             cout << "yes";
             break;
         }
@@ -465,8 +456,7 @@ int main(){
         /*if(!parsed_correct){
             cout << "Invalid option. Try again.\n";
         }*/
-        //fflush(stdin);
-    } while(!parsed_correct);
+        //    } while(!parsed_correct);
     switch (choice){
         case 1:
 
@@ -491,8 +481,7 @@ int main(){
             
             cout << "Enter the ID of the employee you want to delete: ";
             cin >> temp4;
-            fflush(stdin);
-
+            
             deleteEmployee(temp4);
             break;
         
